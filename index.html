@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07131c">
+<title>Sabar Runner — A little patience goes a long way</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800&display=swap');
+:root{color-scheme:dark;--ink:#f7f3e8;--muted:#a3b2b3;--gold:#f3c76b;--mint:#9ae3bd;--panel:#10232b;--line:rgba(222,239,222,.12)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#07131c;color:var(--ink);font-family:Outfit,system-ui,sans-serif;display:flex;justify-content:center;overflow-x:hidden;background-image:radial-gradient(ellipse at 50% 12%,#183742 0%,#0b1c25 46%,#07131c 82%)}
+.shell{width:min(100%,1040px);padding:24px 24px 28px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.brand{display:flex;gap:12px;align-items:center}.brand-icon{width:44px;height:44px;border:1px solid #e8c77955;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#283f3a,#162c32);font-size:23px;box-shadow:inset 0 1px #fff2}.eyebrow{font:500 10px 'DM Mono',monospace;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}.brand h1{font-size:20px;letter-spacing:.08em;margin:2px 0 0;font-weight:800}.tagline{font-size:13px;color:var(--muted);margin:0}.top-right{font:11px 'DM Mono',monospace;color:#9eb2ad;text-align:right;line-height:1.6}.top-right b{color:var(--gold);font-weight:500}
+.hud{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:10px;margin-bottom:11px}.stat{background:#10232bd9;border:1px solid var(--line);border-radius:13px;padding:11px 15px;min-height:66px;display:flex;flex-direction:column;justify-content:center}.stat-label{font:10px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.16em;color:#93aaa8}.stat-value{font-size:23px;font-weight:700;line-height:1.1;margin-top:3px}.stat-value small{font-size:11px;font-weight:500;color:#afbfbb}.patience-top{display:flex;justify-content:space-between;align-items:center}.meter{height:6px;border-radius:10px;background:#263a3e;margin-top:9px;overflow:hidden}.meter-fill{height:100%;width:100%;background:linear-gradient(90deg,#78d6a5,#d8d27b);border-radius:10px;transition:width .25s,background .25s}
+.stage-wrap{position:relative;border-radius:19px;border:1px solid #c8d4b52e;padding:5px;background:#0b1b20;box-shadow:0 20px 70px #0005,0 0 0 1px #ffffff08;overflow:hidden}.stage{height:clamp(280px,49vw,430px);width:100%;position:relative;border-radius:14px;overflow:hidden;background:#102732;touch-action:manipulation}.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}.overlay{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(90deg,#07151c9c,#07151c52,#07151c9c);transition:opacity .2s}.overlay.hidden{opacity:0;pointer-events:none}.dialog{text-align:center;width:min(88%,440px);padding:24px 25px 22px;background:#10232be8;border:1px solid #e4d9ae38;border-radius:19px;box-shadow:0 14px 50px #0006;backdrop-filter:blur(8px)}.dialog .emoji{font-size:33px;margin-bottom:4px}.dialog h2{font-size:clamp(24px,5vw,36px);line-height:1.05;margin:6px 0 10px;letter-spacing:-.03em}.dialog p{margin:0 auto 17px;color:#b8c5bf;line-height:1.55;font-size:14px;max-width:330px}.dialog .sub{font:10px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#bdc9b9;margin:14px 0 0}.btn{border:0;border-radius:11px;background:var(--gold);color:#15211f;font:700 14px Outfit,sans-serif;padding:13px 22px;cursor:pointer;box-shadow:0 4px 0 #b48b45;transition:transform .12s,filter .12s}.btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #b48b45}.toolbar{display:flex;justify-content:space-between;align-items:center;margin:14px 3px 0;color:#9aaba7;font:10px 'DM Mono',monospace;letter-spacing:.04em}.keycap{border:1px solid #5c706b;border-bottom-width:2px;border-radius:5px;padding:3px 7px;color:#d4dfd5}.hint-right{color:#d8bf80}.mobile-jump{display:none}
+.bottom{margin-top:20px;display:flex;justify-content:center;gap:10px;align-items:center;color:#8da19c;font-size:12px}.bottom span{color:#e8c779}.toast{position:absolute;top:15px;left:50%;transform:translate(-50%,-12px);padding:8px 12px;border-radius:20px;background:#07161ddd;border:1px solid #ffffff24;font:11px 'DM Mono',monospace;color:#f0d283;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px){.shell{padding:16px 13px 22px}.top{margin-bottom:13px}.brand-icon{width:39px;height:39px}.brand h1{font-size:17px}.tagline{font-size:11px}.top-right{font-size:9px}.hud{gap:7px}.stat{padding:9px 10px;min-height:60px;border-radius:11px}.stat-value{font-size:20px}.stat-label{font-size:9px}.stage-wrap{padding:4px;border-radius:15px}.stage{height:clamp(270px,67vh,410px);border-radius:11px}.toolbar{margin-top:11px;font-size:9px}.mobile-jump{display:inline}.desktop-jump{display:none}.dialog{padding:21px 16px}.bottom{margin-top:14px;font-size:11px}}@media(max-height:650px) and (min-width:601px){.shell{padding-top:12px}.stage{height:300px}.bottom{margin-top:11px}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <header class="top">
+    <div class="brand"><div class="brand-icon">🌙</div><div><div class="eyebrow">A little patience goes a long way</div><h1>SABAR RUNNER</h1></div></div>
+    <p class="tagline top-right">A QUIET NIGHT, A LONG ROAD<br><b>TAKE A BREATH · KEEP GOING</b></p>
+  </header>
+  <section class="hud" aria-label="Game stats">
+    <div class="stat"><div class="stat-label">Distance</div><div class="stat-value"><span id="score">0000</span><small> m</small></div></div>
+    <div class="stat"><div class="patience-top"><div class="stat-label">Sabar</div><div class="stat-value" style="font-size:18px"><span id="patienceText">100</span><small>%</small></div></div><div class="meter"><div class="meter-fill" id="meter"></div></div></div>
+    <div class="stat"><div class="stat-label">Best run</div><div class="stat-value"><span id="best">0000</span><small> m</small></div></div>
+  </section>
+  <div class="stage-wrap"><div class="stage" id="stage" aria-label="Sabar Runner game area"><canvas id="game" aria-label="Run, jump over obstacles and collect stars"></canvas>
+    <div class="toast" id="toast">+ patience</div>
+    <div class="overlay" id="overlay"><div class="dialog"><div class="emoji" id="dialogEmoji">🌙</div><h2 id="dialogTitle">The night is young.</h2><p id="dialogText">Take a steady breath, find your rhythm, and see how far patience can carry you.</p><button class="btn" id="startBtn">Begin your run</button><div class="sub">Jump over the rush · gather a little light</div></div></div>
+  </div></div>
+  <div class="toolbar"><div><span class="keycap">SPACE</span> <span class="keycap">↑</span> <span class="desktop-jump">or click to jump</span><span class="mobile-jump">or tap anywhere</span></div><div class="hint-right">✦ &nbsp;Stars restore patience</div></div>
+  <footer class="bottom">Made for the journey, not just the finish <span>✦</span></footer>
+</main>
+<script>
+(()=>{
+  const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d'),stage=document.querySelector('#stage');
+  const scoreEl=document.querySelector('#score'),bestEl=document.querySelector('#best'),patienceEl=document.querySelector('#patienceText'),meter=document.querySelector('#meter'),overlay=document.querySelector('#overlay'),startBtn=document.querySelector('#startBtn'),titleEl=document.querySelector('#dialogTitle'),textEl=document.querySelector('#dialogText'),emojiEl=document.querySelector('#dialogEmoji'),toast=document.querySelector('#toast');
+  let W=800,H=400,dpr=1,state='ready',last=0,score=0,best=Number(localStorage.getItem('sabar-best')||0),patience=100,speed=280,spawnIn=1,starIn=2,objects=[],particles=[],clouds=[],runTime=0,toastTimer=0;
+  bestEl.textContent=String(best).padStart(4,'0');
+  const player={x:105,y:0,w:37,h:48,vy:0,grounded:true,blink:0};
+  const rand=(a,b)=>a+Math.random()*(b-a),floorY=()=>H*.79;
+  function resize(){const r=stage.getBoundingClientRect();W=r.width;H=r.height;dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);player.x=Math.max(55,W*.13);if(player.grounded)player.y=floorY()-player.h;clouds=Array.from({length:6},(_,i)=>({x:i*W/4+rand(0,100),y:rand(H*.1,H*.43),s:rand(.45,1.1)}));draw()}
+  function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+  function drawBackground(dt=0){const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#173440');g.addColorStop(.64,'#29474a');g.addColorStop(1,'#c09861');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    const moonX=W*.78,moonY=H*.21;ctx.fillStyle='#f0d89d';ctx.globalAlpha=.88;ctx.beginPath();ctx.arc(moonX,moonY,Math.min(W,H)*.057,0,Math.PI*2);ctx.fill();ctx.globalAlpha=.17;ctx.beginPath();ctx.arc(moonX,moonY,Math.min(W,H)*.095,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+    ctx.fillStyle='#f5dfac';for(let i=0;i<34;i++){const x=((i*137.5+runTime*8)%(W+20)),y=(i*67.3)%(H*.53);ctx.globalAlpha=.18+(i%3)*.1;ctx.fillRect(x,y,1.5,1.5)}ctx.globalAlpha=1;
+    // distant hills and mosque silhouettes
+    ctx.fillStyle='#203b3d';ctx.beginPath();ctx.moveTo(0,H*.67);for(let x=0;x<=W+20;x+=20)ctx.lineTo(x,H*.58+Math.sin(x*.012+1)*H*.04);ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.fill();
+    const mx=W*.57,my=H*.58;ctx.fillStyle='#183337';ctx.fillRect(mx,my,86,H*.23);ctx.beginPath();ctx.ellipse(mx+43,my,43,23,0,Math.PI,0);ctx.fill();ctx.fillRect(mx+40,my-54,6,40);ctx.beginPath();ctx.arc(mx+43,my-54,3,0,Math.PI*2);ctx.fill();for(let x=mx+10;x<mx+82;x+=21){ctx.fillRect(x,my+13,5,14);ctx.beginPath();ctx.arc(x+2.5,my+13,2.5,Math.PI,0);ctx.fill()}
+    // rolling ground
+    const gy=floorY();ctx.fillStyle='#172e30';ctx.fillRect(0,gy,W,H-gy);ctx.fillStyle='#c2a06b';ctx.fillRect(0,gy,W,3);ctx.fillStyle='#385047';for(let i=0;i<Math.ceil(W/35)+2;i++){let x=(i*35-(runTime*speed*.32)%35);ctx.fillRect(x,gy+9+(i*17%20),8+(i*11%11),2)}
+    ctx.fillStyle='#172c30';for(let i=0;i<6;i++){let x=((i*180-runTime*speed*.55)%(W+200));ctx.fillRect(x,gy-26,3,26);ctx.beginPath();ctx.arc(x+2,gy-27,rand(6,11),0,Math.PI*2);ctx.fill()}
+  }
+  function drawPlayer(){let x=player.x,y=player.y;ctx.save();ctx.translate(x+player.w/2,y+player.h/2);if(!player.grounded)ctx.rotate(-.08);ctx.fillStyle='#121f22';ctx.globalAlpha=.22;ctx.beginPath();ctx.ellipse(0,player.h*.51,player.w*.56,5,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+    // legs
+    let swing=player.grounded&&state==='playing'?Math.sin(runTime*17)*5:0;ctx.strokeStyle='#253b36';ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-5,12);ctx.lineTo(-7+swing,23);ctx.moveTo(6,12);ctx.lineTo(7-swing,23);ctx.stroke();
+    // warm jacket
+    ctx.fillStyle='#d5a65f';roundRect(-13,-3,26,23,9);ctx.fill();ctx.fillStyle='#f0c77c';roundRect(-2,-2,4,19,2);ctx.fill();
+    // head and scarf
+    ctx.fillStyle='#bb8057';ctx.beginPath();ctx.arc(0,-12,12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#e6d9bb';ctx.beginPath();ctx.arc(0,-15,13,Math.PI,Math.PI*2);ctx.lineTo(13,-9);ctx.quadraticCurveTo(2,-4,-12,-10);ctx.closePath();ctx.fill();ctx.fillStyle='#fff0cc';ctx.fillRect(7,-14,2,2);
+    // little backpack
+    ctx.fillStyle='#5e8770';roundRect(-18,-1,8,15,3);ctx.fill();ctx.restore();
+  }
+  function drawObstacle(o){ctx.save();ctx.translate(o.x,o.y);ctx.fillStyle='#16282a55';ctx.beginPath();ctx.ellipse(o.w/2,o.h+3,o.w*.65,5,0,0,Math.PI*2);ctx.fill();if(o.type==='lantern'){
+      ctx.strokeStyle='#d9b866';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(o.w/2,0);ctx.lineTo(o.w/2,7);ctx.stroke();ctx.fillStyle='#a56b43';roundRect(3,7,o.w-6,o.h-9,5);ctx.fill();ctx.fillStyle='#f3cb70';ctx.globalAlpha=.9;roundRect(8,12,o.w-16,o.h-19,4);ctx.fill();ctx.globalAlpha=.2;ctx.beginPath();ctx.arc(o.w/2,o.h*.55,27,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+    }else{ctx.fillStyle=o.type==='rock'?'#777966':'#b77f54';roundRect(0,0,o.w,o.h,5);ctx.fill();ctx.fillStyle=o.type==='rock'?'#96937b':'#d39b6a';ctx.beginPath();ctx.ellipse(o.w*.4,o.h*.3,o.w*.28,o.h*.18,-.3,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#614e3c';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(4,o.h*.62);ctx.lineTo(o.w-4,o.h*.62);ctx.stroke();}ctx.restore()}
+  function drawStar(o){ctx.save();ctx.translate(o.x+o.w/2,o.y+o.h/2+Math.sin(runTime*4+o.phase)*5);ctx.rotate(runTime*1.7);ctx.fillStyle='#ffe28a';ctx.shadowColor='#ffe28a';ctx.shadowBlur=15;ctx.beginPath();for(let i=0;i<10;i++){let a=-Math.PI/2+i*Math.PI/5,r=i%2?7:13;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r)}ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.restore()}
+  function draw(){if(!W||!H)return;ctx.clearRect(0,0,W,H);drawBackground();for(const o of objects)o.type==='star'?drawStar(o):drawObstacle(o);drawPlayer();for(const p of particles){ctx.globalAlpha=Math.max(0,p.life/.7);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,3,3)}ctx.globalAlpha=1}
+  function burst(x,y,color,n=8){for(let i=0;i<n;i++)particles.push({x,y,vx:rand(-100,100),vy:rand(-150,0),life:rand(.35,.7),color})}
+  function jump(){if(state==='ready'){start();return}if(state!=='playing'||!player.grounded)return;player.vy=-Math.min(620,H*1.55);player.grounded=false;burst(player.x+18,floorY()-3,'#d7c58c',4)}
+  function start(){state='playing';score=0;patience=100;speed=280;spawnIn=.8;starIn=2.4;runTime=0;objects=[];particles=[];player.y=floorY()-player.h;player.vy=0;player.grounded=true;updateHud();overlay.classList.add('hidden');last=performance.now();requestAnimationFrame(loop)}
+  function end(){state='over';const rounded=Math.floor(score);if(rounded>best){best=rounded;localStorage.setItem('sabar-best',best);bestEl.textContent=String(best).padStart(4,'0')}emojiEl.textContent='🌅';titleEl.textContent='Every run teaches you.';textEl.textContent=`You traveled ${rounded} meters. Rest, take a breath, and try again when you’re ready.`;startBtn.textContent='Run it back';overlay.classList.remove('hidden')}
+  function updateHud(){scoreEl.textContent=String(Math.floor(score)).padStart(4,'0');patienceEl.textContent=Math.round(patience);meter.style.width=patience+'%';meter.style.background=patience<30?'linear-gradient(90deg,#e77b64,#f2b96b)':'linear-gradient(90deg,#78d6a5,#d8d27b)'}
+  function showToast(){toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),700)}
+  function overlap(a,b,pad=0){return a.x+pad<b.x+b.w&&a.x+a.w-pad>b.x&&a.y+pad<b.y+b.h&&a.y+a.h-pad>b.y}
+  function step(dt){runTime+=dt;score+=dt*speed*.035;speed=Math.min(490,280+score*.16);patience=Math.max(0,patience-dt*1.35);player.vy+=1550*dt;player.y+=player.vy*dt;if(player.y+player.h>=floorY()){player.y=floorY()-player.h;player.vy=0;player.grounded=true}
+    spawnIn-=dt;if(spawnIn<=0){let type=Math.random()<.42?'rock':'block',h=type==='rock'?rand(25,36):rand(34,54),w=type==='rock'?rand(31,43):rand(25,39);objects.push({type,x:W+15,y:floorY()-h,w,h});spawnIn=rand(1.05,1.65)*Math.max(.7,320/speed)}
+    starIn-=dt;if(starIn<=0){objects.push({type:'star',x:W+15,y:floorY()-rand(90,160),w:24,h:24,phase:rand(0,8)});starIn=rand(2.2,3.8)}
+    for(let i=objects.length-1;i>=0;i--){let o=objects[i];o.x-=speed*dt;if(o.type==='star'){if(overlap({x:player.x,y:player.y,w:player.w,h:player.h},o,6)){patience=Math.min(100,patience+18);score+=35;burst(o.x+12,o.y+12,'#ffe28a',13);showToast();objects.splice(i,1);continue}}else if(overlap({x:player.x+4,y:player.y+6,w:player.w-8,h:player.h-9},o,4)){burst(player.x+18,player.y+20,'#f3c76b',10);end();return}if(o.x+o.w<0)objects.splice(i,1)}
+    for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=300*dt;p.life-=dt;if(p.life<=0)particles.splice(i,1)}updateHud();if(patience<=0){end()}}
+  function loop(now){if(state!=='playing')return;let dt=Math.min(.035,(now-last)/1000||0);last=now;step(dt);draw();if(state==='playing')requestAnimationFrame(loop)}
+  startBtn.addEventListener('click',start);canvas.addEventListener('pointerdown',e=>{e.preventDefault();jump()});window.addEventListener('keydown',e=>{if(['Space','ArrowUp','KeyW'].includes(e.code)){e.preventDefault();jump()}if(e.code==='Enter'&&state!=='playing')start()});window.addEventListener('resize',resize);resize();
+})();
+</script>
+</body>
+</html>
